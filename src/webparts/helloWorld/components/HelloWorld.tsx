@@ -43,7 +43,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       id: 0,
       Title: "",
       Name: "",
-      USN: 0,
+      USN: null,
       DOJ: null,
       Email: "",
       students: [],
@@ -111,7 +111,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     
   }
   getErrormess(){
-    this.state.USN?'':"this field cant be empty"
+    //this.state.USN?'':"this field cant be empty"
     if(this.state.USN){
       this.setState({errormess:""})
     }
@@ -221,7 +221,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
           <TextField type="text" name="Name" value={this.state.Name}  onChange={(event) => this.getdata(event)} />
           <br />
           <label>USN</label><br />
-          <TextField type="number" name="USN" value={this.state.USN}  onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess}/>
+          <TextField type="number" name="USN" value={this.state.USN}  onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} required={true}/>
           <br />
           <label>DOJ</label><br />
           <TextField type="date" name="DOJ" value={this.state.DOJ}  onChange={(event) => this.getdata(event)} />
