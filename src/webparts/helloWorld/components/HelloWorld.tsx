@@ -48,7 +48,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   private update = false;
   private _selection: Selection;
   private _columns: IColumn[];
-  private sid=0;
+  private sid = 0;
   private dialogContentProps = {
     type: DialogType.normal,
     title: 'Delete Entry',
@@ -59,7 +59,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     isBlocking: true,
     styles: { main: { maxWidth: 450 } },
   };
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -72,25 +72,25 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       students: [],
       selectionDetails: "",
       item: 0,
-      buttonendis:true,
-      enable:false,
-      errormess:"",
+      buttonendis: true,
+      enable: false,
+      errormess: "",
       showpanel: false,
-      opened:false,
-      clicked:false,
-      isPanelOpen:false,
-      isDialogVisible:false
+      opened: false,
+      clicked: false,
+      isPanelOpen: false,
+      isDialogVisible: false
     };
     this.addData = this.addData.bind(this);
     this.updateData = this.updateData.bind(this);
     this.deleteData = this.deleteData.bind(this);
-    this.getErrormess=this.getErrormess.bind(this);
-    this.onDismiss=this.onDismiss.bind(this);
-    this.hideDialog=this.hideDialog.bind(this);
-    this.hideDialogAndPanel=this.hideDialogAndPanel.bind(this);
-    this.closePanel=this.closePanel.bind(this);
-    this.closePanelSave=this.closePanelSave.bind(this)
-    this.cancelclick=this.cancelclick.bind(this)
+    this.getErrormess = this.getErrormess.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+    this.hideDialog = this.hideDialog.bind(this);
+    this.hideDialogAndPanel = this.hideDialogAndPanel.bind(this);
+    this.closePanel = this.closePanel.bind(this);
+    this.closePanelSave = this.closePanelSave.bind(this)
+    this.cancelclick = this.cancelclick.bind(this)
     sp.setup({ spfxContext: this.props.context });
     this._selection = new Selection({
       onSelectionChanged: () =>
@@ -133,56 +133,62 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     ];
   }
   private _getSelectionDetails() {
-    
-    if(this._selection.getSelectedCount()===0)
-    this.setState({buttonendis:true, enable:false, clicked:false})
-    else{
+
+    if (this._selection.getSelectedCount() === 0)
+      this.setState({ buttonendis: true, enable: false, clicked: false })
+    else {
       const getitem = this._selection.getSelection()[0] as IDetailsListBasicExampleItem;
       this.getid = getitem.InternalId
+      console.log(getitem.DOJ);
+      const datev=new Date(getitem.DOJ)
+      const newdatev= new Date(datev.setDate(datev.getDate() + 1)).toISOString().substring(0, 10);
+      // const datev=new Date(Date.UTC(getitem.DOJ.getFullYear(), getitem.DOJ.getMonth(), getitem.DOJ.getDate())
+      console.log(newdatev);
       this.setState({
-        buttonendis:false,  enable:true, clicked:true, isPanelOpen:true, Title:getitem.Title, Name:getitem.Name, USN:getitem.USN, DOJ:getitem.DOJ, Email:getitem.Email})
-    } 
-    
-    
-  }
-  
-  getErrormess(){
-    //this.state.USN?'':"this field cant be empty"
-    if(this.state.USN){
-      this.setState({errormess:""})
+        buttonendis: false, enable: true, clicked: true, isPanelOpen: true, Title: getitem.Title, Name: getitem.Name, USN: getitem.USN, DOJ:newdatev, Email: getitem.Email
+      })
     }
-    else{
-      this.setState({errormess:"this field cant be empty"})
+
+
+  }
+
+  getErrormess() {
+    //this.state.USN?'':"this field cant be empty"
+    if (this.state.USN) {
+      this.setState({ errormess: "" })
+    }
+    else {
+      this.setState({ errormess: "this field cant be empty" })
     }
   }
   componentDidMount() {
     this.readData();
   }
-  private closePanel(){
+  private closePanel() {
     this.setState({
       isPanelOpen: false
     })
   }
-  private closePanelSave(){
-    this.setState({ showpanel: true, opened: true})
+  private closePanelSave() {
+    this.setState({ showpanel: true, opened: true })
   }
-  private onDismiss(){
-    
-      this.setState({
-        isDialogVisible: true
-      })
-    
-  }
-  private hideDialog(){
+  private onDismiss() {
+
     this.setState({
-      clicked:true,
-      isPanelOpen:true,
+      isDialogVisible: true
+    })
+
+  }
+  private hideDialog() {
+    this.setState({
+      clicked: true,
+      isPanelOpen: true,
       isDialogVisible: false
     })
   }
-  private hideDialogAndPanel(){
+  private hideDialogAndPanel() {
     this.setState({
-      isPanelOpen:false,
+      isPanelOpen: false,
       isDialogVisible: false
     })
   }
@@ -190,34 +196,35 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     const items = await sp.web.lists.getByTitle("College").items.getAll();
     let studs = [];
     for (let i = 0; i < items.length; i++) {
-          studs.push({
-            InternalId : items[i].Id , 
-            Title:items[i].Title,
-            Name: items[i].Name,
-            USN: items[i].USN,
-            DOJ:
-              new Date(items[i].DOJ).getDate() +
-              "-" +
-              (new Date(items[i].DOJ).getMonth() + 1) +
-              "-" +
-              new Date(items[i].DOJ).getFullYear(),
-              Email:items[i].Email
-          });
-        }
-      this.setState({
+      studs.push({
+        InternalId: items[i].Id,
+        Title: items[i].Title,
+        Name: items[i].Name,
+        USN: items[i].USN,
+        DOJ:
+        (new Date(items[i].DOJ).getMonth() + 1)
+           +
+          "-" +
+           (new Date(items[i].DOJ).getDate())+
+          "-" +
+          new Date(items[i].DOJ).getFullYear(),
+        Email: items[i].Email
+      });
+    }
+    this.setState({
       students: [...studs]
     });
   }
   private cancelclick() {
-    this.setState({  showpanel:false, opened:false });
+    this.setState({ showpanel: false, opened: false });
   }
   private getdata = async (event) => {
     this.setState({ [event.target.name]: event.target.value });
   }
 
   private addData = async (event) => {
-    const newdate=(new Date(this.state.DOJ).getDate() +"-" +(new Date(this.state.DOJ).getMonth() + 1) +
-    "-" +new Date(this.state.DOJ).getFullYear());
+    const newdate = (new Date(this.state.DOJ).getDate() + "-" + (new Date(this.state.DOJ).getMonth() + 1) +
+      "-" + new Date(this.state.DOJ).getFullYear());
     const data = await sp.web.lists.getByTitle("College").items.add({
       // id:this.state.id,
       Title: this.state.Title,
@@ -227,6 +234,9 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       Email: this.state.Email
     });
     this.readData();
+    this.setState({
+      showpanel:false, opened:false
+    })
   }
 
 
@@ -237,14 +247,8 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     const items: any = await sp.web.lists.getByTitle("College").items.getById(this.getid).get();
     this.toChange = items;
     this.update = true;
-    this.setState({
-      Title: items.Title,
-      Name: items.Name,
-      USN: items.USN,
-      DOJ: items.DOJ,
-      Email: items.Email
-    });
-    this.readData();
+
+    
   }
 
   private updateElement = async () => {
@@ -255,14 +259,16 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       DOJ: this.state.DOJ,
       Email: this.state.Email
     });
+    this.readData();
     this.setState({
       Title: "",
       Name: "",
       USN: "",
       DOJ: "",
-      Email: ""
+      Email: "",
+      isPanelOpen:false,
+      clicked:false
     })
-
   }
 
   private deleteData = async () => {
@@ -276,7 +282,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     this.readData();
     this._selection.setAllSelected(false);
     this.setState({
-      isDialogVisible:false,
+      isDialogVisible: false,
       Title: "",
       Name: "",
       USN: "",
@@ -292,7 +298,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     return (
       <div className={styles.helloWorld}>
         {/* <ChildOne /> */}
-        
+
         <br />
         <br />
         <div>
@@ -307,82 +313,80 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
               ariaLabelForSelectionColumn="Toggle selection"
               ariaLabelForSelectAllCheckbox="Toggle selection for all items"
               checkButtonAriaLabel="Row checkbox"
-              selectionMode ={SelectionMode.single}
+              selectionMode={SelectionMode.single}
             />
           </Fabric>
 
         </div>
-        <DefaultButton text="Add" onClick={this.closePanelSave} />
+        <PrimaryButton text="Add" onClick={this.closePanelSave} />
         {this.state.showpanel && <Panel
-        isLightDismiss
-        isOpen={this.state.opened} 
-        onDismiss={this.cancelclick}
-        closeButtonAriaLabel="Close"
-        headerText="Add item"
-      >
-        <form >
-          <label>Title</label><br />
-          <TextField type="text" name="Title" value={this.state.Title}  onChange={(event) => this.getdata(event)} required />
-          <br />
-          <label>Student Name</label><br />
-          <TextField type="text" name="Name" value={this.state.Name}  onChange={(event) => this.getdata(event)} />
-          <br />
-          {/* <label>USN</label><br /> */}
-          <TextField label="USN" required type="number" name="USN" value={this.state.USN}  onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
-          <br />
-          <label>DOJ</label><br />
-          <TextField  type="date" name="DOJ" value={this.state.DOJ}  onChange={(event) => this.getdata(event)} />
-          <br />
-          <label>Email</label><br />
-          <TextField type="text" name="Email" value={this.state.Email}  onChange={(event) => this.getdata(event)}  />
-          <br />
-          {/* <button type="submit">Save</button>
+          isOpen={this.state.opened}
+          onDismiss={this.cancelclick}
+          closeButtonAriaLabel="Close"
+          headerText="Add item"
+        >
+          <form >
+            <label>Title</label><br />
+            <TextField type="text" name="Title" value={this.state.Title} onChange={(event) => this.getdata(event)} required />
+            <br />
+            <label>Student Name</label><br />
+            <TextField type="text" name="Name" value={this.state.Name} onChange={(event) => this.getdata(event)} />
+            <br />
+            {/* <label>USN</label><br /> */}
+            <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
+            <br />
+            <label>DOJ</label><br />
+            <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} />
+            <br />
+            <label>Email</label><br />
+            <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
+            <br />
+            {/* <button type="submit">Save</button>
           <button type="submit" onClick={this.updateElement} >Edit</button> */}
 
-          <PrimaryButton text="Save" onClick={(event) => this.addData(event)} disabled={this.state.enable}/>
-        </form>
-      </Panel>}
+            <PrimaryButton text="Save" onClick={(event) => this.addData(event)} disabled={this.state.enable} />
+          </form>
+        </Panel>}
 
-      {this.state.clicked && <div><Panel
-        isLightDismiss
-        isOpen={this.state.isPanelOpen} 
-        onDismiss={this.closePanel}
-        closeButtonAriaLabel="Close"
-        headerText="Update or Delete"
-      >
-        <form >
-          <label>Title</label><br />          <PrimaryButton text="Delete" onClick={this.onDismiss} disabled={this.state.buttonendis} />
-          <TextField type="text" name="Title" value={this.state.Title}  onChange={(event) => this.getdata(event)} required />
-          <br />
-          <label>Student Name</label><br />
-          <TextField type="text" name="Name" value={this.state.Name}  onChange={(event) => this.getdata(event)} />
-          <br />
-          {/* <label>USN</label><br /> */}
-          <TextField label="USN" required type="number" name="USN" value={this.state.USN}  onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
-          <br />
-          <label>DOJ</label><br />
-          <TextField  type="date" name="DOJ" value={this.state.DOJ}  onChange={(event) => this.getdata(event)} />
-          <br />
-          <label>Email</label><br />
-          <TextField type="text" name="Email" value={this.state.Email}  onChange={(event) => this.getdata(event)}  />
-          <br />
-          <PrimaryButton text="Update" onClick={() => this.updateData()} disabled={this.state.buttonendis}/>
-          
-        </form>
-      </Panel>
-      <Dialog
-      hidden={!this.state.isDialogVisible}
-      onDismiss={this.hideDialog}
-      dialogContentProps={this.dialogContentProps}
-      modalProps={this.dialogModalProps}
-    >
-      <DialogFooter>
-        <PrimaryButton onClick={() => this.deleteData()} text="Yes" />
-        <DefaultButton onClick={this.hideDialog} text="No" />
-      </DialogFooter>
-    </Dialog>
-      </div>
-      }
+        {this.state.clicked && <div><br /><Panel
+          isOpen={this.state.isPanelOpen}
+          onDismiss={this.closePanel}
+          closeButtonAriaLabel="Close"
+        >
+          <div><label style={{fontSize : "25px"}}>Edit Data</label><PrimaryButton style={{marginLeft: "100px"}} text="Delete" onClick={this.onDismiss} disabled={this.state.buttonendis} /></div>
+          <form >
+            <label>Title</label><br />
+            <TextField type="text" name="Title" value={this.state.Title} onChange={(event) => this.getdata(event)} required />
+            <br />
+            <label>Student Name</label><br />
+            <TextField type="text" name="Name" value={this.state.Name} onChange={(event) => this.getdata(event)} />
+            <br />
+            {/* <label>USN</label><br /> */}
+            <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
+            <br />
+            <label>DOJ</label><br />
+            <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} />
+            <br />
+            <label>Email</label><br />
+            <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
+            <br />
+            <PrimaryButton text="Update" onClick={() => this.updateData()} disabled={this.state.buttonendis} />
+            
+          </form>
+        </Panel>
+          <Dialog
+            hidden={!this.state.isDialogVisible}
+            onDismiss={this.hideDialog}
+            dialogContentProps={this.dialogContentProps}
+            modalProps={this.dialogModalProps}
+          >
+            <DialogFooter>
+              <PrimaryButton onClick={() => this.deleteData()} text="Yes" />
+              <DefaultButton onClick={this.hideDialog} text="No" />
+            </DialogFooter>
+          </Dialog>
+        </div>
+        }
       </div>
     );
   }
