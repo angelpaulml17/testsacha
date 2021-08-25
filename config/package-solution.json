@@ -3,7 +3,7 @@
   "solution": {
     "name": "listtask-client-side-solution",
     "id": "caf7e0a4-2597-4f03-a69b-85de17383dcd",
-    "version": "1.1.0.0",
+    "version": "1.21.08.25",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,

@@ -50,7 +50,6 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   private _selection: Selection;
   private _columns: IColumn[];
   private sid = 0;
-  private selectedDate:any;
   private dialogContentProps = {
     type: DialogType.normal,
     title: 'Delete Entry',
@@ -148,11 +147,11 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       // const newdatev= new Date(datev.setDate(datev.getDate() + 1)).toISOString().substring(0, 10);
       // const datev=new Date(Date.UTC(getitem.DOJ.getFullYear(), getitem.DOJ.getMonth(), getitem.DOJ.getDate())
       // console.log(newdatev);
-      const datev=new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(0, 2)+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(3, 5))+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(6));
-      const newdate=datev.substring(0,2)+"-"+datev.substring(3,5)+"-"+datev.substring(6)
-     this.selectedDate= new Date(getitem.DOJ).toDateString();
+      //const datev=new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(0, 2)+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(3, 5))+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(6));
+      //const newdate=datev.substring(0,2)+"-"+datev.substring(3,5)+"-"+datev.substring(6)
+      const datev=new Date(getitem.tosetdate).toLocaleDateString("nl",{year:'numeric', day:"2-digit",month:"2-digit"}).substring(0,10);
       this.setState({
-        buttonendis: false, enable: true, clicked: true, isPanelOpen: true, Title: getitem.Title, Name: getitem.Name, USN: getitem.USN, DOJ:this.selectedDate, Email: getitem.Email
+        buttonendis: false, enable: true, clicked: true, isPanelOpen: true, Title: getitem.Title, Name: getitem.Name, USN: getitem.USN, DOJ: new Date(getitem.tosetdate), Email: getitem.Email
       })
     }
 
@@ -172,7 +171,12 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   }
   private closePanel() {
     this.setState({
-      isPanelOpen: false
+      isPanelOpen: false,
+      Title: "",
+      Name: "",
+      USN: "",
+      DOJ: "",
+      Email: ""
     })
   }
   private closePanelSave() {
@@ -209,10 +213,10 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
         Name: items[i].Name,
         USN: items[i].USN,
         DOJ:
-        (new Date(items[i].DOJ).getMonth() + 1)
+        (new Date(items[i].DOJ).getDate())
            +
           "-" +
-           (new Date(items[i].DOJ).getDate())+
+           (new Date(items[i].DOJ).getMonth() + 1)+
           "-" +
           new Date(items[i].DOJ).getFullYear(),
         Email: items[i].Email,
@@ -340,9 +344,13 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
             {/* <label>USN</label><br /> */}
             <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
             <br />
-            <label>DOJ</label><br />
+            {/* <label>DOJ</label><br /> */}
             {/* <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} /> */}
-            <DatePicker value={new Date(this.state.DOJ)} onChange={(event) => this.getdata(event)}/>
+            <DatePicker
+                label="DOJ"
+                value={this.state.DOJ}
+                onSelectDate={(item) => this.setState({ DOJ: item })}
+              />
             <br />
             <label>Email</label><br />
             <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
@@ -370,9 +378,14 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
             {/* <label>USN</label><br /> */}
             <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
             <br />
-            <label>DOJ</label><br />
-            {/* <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} /> */}
-            <DatePicker value={new Date(this.state.DOJ)} onChange={(event) => this.getdata(event)}/>
+            {/* <label>DOJ</label><br />
+            <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} /> */}
+            <DatePicker
+                label="DOJ"
+                value={this.state.DOJ}
+                onSelectDate={(item) => this.setState({ DOJ: item })}
+              />
+
             <br />
             <label>Email</label><br />
             <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
