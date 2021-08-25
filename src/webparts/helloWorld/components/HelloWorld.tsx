@@ -11,7 +11,7 @@ import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { TextField, MaskedTextField } from '@fluentui/react/lib/TextField';
 import { DetailsList, DetailsListLayoutMode, Selection, IColumn, SelectionMode } from '@fluentui/react/lib/DetailsList';
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
-import { Calendar, defaultCalendarStrings } from '@fluentui/react';
+import { Calendar, DatePicker, defaultCalendarStrings } from '@fluentui/react';
 import { Panel } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
@@ -22,6 +22,7 @@ export interface IDetailsListBasicExampleItem {
   USN: string;
   DOJ: number;
   Email: string;
+  tosetdate:string;
 
 }
 
@@ -49,6 +50,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   private _selection: Selection;
   private _columns: IColumn[];
   private sid = 0;
+  private selectedDate:any;
   private dialogContentProps = {
     type: DialogType.normal,
     title: 'Delete Entry',
@@ -59,6 +61,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     isBlocking: true,
     styles: { main: { maxWidth: 450 } },
   };
+  
 
   constructor(props) {
     super(props);
@@ -72,6 +75,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       students: [],
       selectionDetails: "",
       item: 0,
+      tosetdate:0,
       buttonendis: true,
       enable: false,
       errormess: "",
@@ -140,15 +144,17 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       const getitem = this._selection.getSelection()[0] as IDetailsListBasicExampleItem;
       this.getid = getitem.InternalId
       console.log(getitem.DOJ);
-      const datev=new Date(getitem.DOJ)
-      const newdatev= new Date(datev.setDate(datev.getDate() + 1)).toISOString().substring(0, 10);
+      // const datev=new Date(getitem.DOJ)
+      // const newdatev= new Date(datev.setDate(datev.getDate() + 1)).toISOString().substring(0, 10);
       // const datev=new Date(Date.UTC(getitem.DOJ.getFullYear(), getitem.DOJ.getMonth(), getitem.DOJ.getDate())
-      console.log(newdatev);
+      // console.log(newdatev);
+      const datev=new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(0, 2)+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(3, 5))+"-"+(new Date(getitem.tosetdate).toLocaleDateString("en-GM").substring(6));
+      const newdate=datev.substring(0,2)+"-"+datev.substring(3,5)+"-"+datev.substring(6)
+     this.selectedDate= new Date(getitem.DOJ).toDateString();
       this.setState({
-        buttonendis: false, enable: true, clicked: true, isPanelOpen: true, Title: getitem.Title, Name: getitem.Name, USN: getitem.USN, DOJ:newdatev, Email: getitem.Email
+        buttonendis: false, enable: true, clicked: true, isPanelOpen: true, Title: getitem.Title, Name: getitem.Name, USN: getitem.USN, DOJ:this.selectedDate, Email: getitem.Email
       })
     }
-
 
   }
 
@@ -195,6 +201,7 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   private readData = async () => {
     const items = await sp.web.lists.getByTitle("College").items.getAll();
     let studs = [];
+
     for (let i = 0; i < items.length; i++) {
       studs.push({
         InternalId: items[i].Id,
@@ -208,7 +215,8 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
            (new Date(items[i].DOJ).getDate())+
           "-" +
           new Date(items[i].DOJ).getFullYear(),
-        Email: items[i].Email
+        Email: items[i].Email,
+        tosetdate:items[i].DOJ
       });
     }
     this.setState({
@@ -238,7 +246,6 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
       showpanel:false, opened:false
     })
   }
-
 
 
   private updateData = async () => {
@@ -292,14 +299,12 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
   }
 
 
-
   public render(): React.ReactElement<IHelloWorldProps> {
     const emp = this.state.students;
     return (
       <div className={styles.helloWorld}>
         {/* <ChildOne /> */}
-
-        <br />
+        <h1>Crud operations on student data</h1>
         <br />
         <div>
           <Fabric>
@@ -336,7 +341,8 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
             <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
             <br />
             <label>DOJ</label><br />
-            <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} />
+            {/* <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} /> */}
+            <DatePicker value={new Date(this.state.DOJ)} onChange={(event) => this.getdata(event)}/>
             <br />
             <label>Email</label><br />
             <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
@@ -365,7 +371,8 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
             <TextField label="USN" required type="number" name="USN" value={this.state.USN} onChange={(event) => this.getdata(event)} errorMessage={this.state.errormess} onBlur={this.getErrormess} />
             <br />
             <label>DOJ</label><br />
-            <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} />
+            {/* <TextField type="date" name="DOJ" value={this.state.DOJ} onChange={(event) => this.getdata(event)} /> */}
+            <DatePicker value={new Date(this.state.DOJ)} onChange={(event) => this.getdata(event)}/>
             <br />
             <label>Email</label><br />
             <TextField type="text" name="Email" value={this.state.Email} onChange={(event) => this.getdata(event)} />
@@ -391,3 +398,5 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, any, a
     );
   }
 }
+
+
